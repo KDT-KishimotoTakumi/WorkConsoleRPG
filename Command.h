@@ -19,9 +19,6 @@ public:
 		None			//	無効なコマンド
 	};
 
-	//	入力処理用の変数
-	int input;
-
 	//	コピー・代入の禁止
 	Command(const Command&) = delete;
 	Command& operator=(const Command&) = delete;

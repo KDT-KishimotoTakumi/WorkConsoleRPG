@@ -38,10 +38,27 @@ public:
 	virtual ~Enemy() {}
 
 	//	敵の更新処理
-	virtual void Update()
+	virtual void Draw()
 	{
-		//	Enemyのステータスを表示
-		printf("Enemyの名前： % s, Enemyの体力： % d, Enemyの攻撃力： % d\n",
-			this->name, this->hp, this->atk);
+		//	HPが０より大きい場合のみ表示
+		if (this->hp > 0)
+			//	Enemyのステータスを表示
+			printf("Enemyの名前： % s, Enemyの体力： % d, Enemyの攻撃力： % d\n",
+				this->name, this->hp, this->atk);
+	}
+	//	敵が死んだかどうかの判定用関数
+	virtual bool IsDead()
+	{
+		//	HPが０になったら消す
+		if (this->hp <= 0) {
+			std::cout << this->name << "は倒れた！" << std::endl;
+		}
+
+		return (this->hp <= 0);
+	}
+
+	virtual void Damage()
+	{
+		std::cout << this->name << "はダメージを受けた！" << std::endl;
 	}
 };

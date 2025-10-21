@@ -36,15 +36,25 @@ public:
 	}
 
 	//	プレイヤーの更新処理
-	void Update()
+	void Draw()
 	{
 		////	プレイヤーのステータスを表示
 		//std::cout << "Playerの体力：" << hp << std::endl
 		//	<< "Playerの攻撃力：" << atk << std::endl
 		//	<< "Playerの防御力" << def << std::endl;
-
+		//	HPが０より大きい場合のみ表示
+		if (this->hp > 0)
 		//	フォーマット指定子を使用して表示
 		printf("Playerの体力：%d, Playerの攻撃力：%d, Playerの防御力：%d\n", this->hp, this->atk, this->def);
-		
+	}
+	//	プレイヤーが死んだかどうかの判定用関数	
+	bool IsDead()
+	{
+		//	HPが０になったら消す
+		if (this->hp <= 0) {
+			std::cout << "プレイヤーは倒れた！" << std::endl;
+		}
+
+		return (this->hp <= 0);
 	}
 };
