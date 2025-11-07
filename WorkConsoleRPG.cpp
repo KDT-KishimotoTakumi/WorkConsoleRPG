@@ -2,38 +2,85 @@
 //
 
 #include <iostream>
-#include "Player.h"
-#include "Enemy.h"
-#include "EnemyFactory.h"
+#include <memory>
+
+#include "SceneBase.h"
+#include "SceneType.h"
+#include "Title.h"
+#include "Game.h"
+#include "GameOver.h"
+#include "GameClear.h"
 
 int main()
 {
-	//	ランダムにする（乱数の使用）
-	//	乱数系列の初期化
-	//	このコードを書かないとrand()を使用するとき何回も同じ値が入ってくる（制御するため）
-	srand(time(NULL));
+	////	ランダムにする（乱数の使用）
+	////	乱数系列の初期化
+	////	このコードを書かないとrand()を使用するとき何回も同じ値が入ってくる（制御するため）
+	//srand(time(NULL));
 
-	//	乱数値の取得
-	int r = (rand() % 4) + 1;
+	////	乱数値の取得
+	//int r = (rand() % 4) + 1;
 
-	//	乱数の値を描画
-	printf("%d\n", r);
+	////	乱数の値を描画
+	//printf("%d\n", r);
 
-    //  プレイヤーのシングルトンインスタンスを取得
-	Player* player = Player::GetInstance();
+ //   //  プレイヤーのシングルトンインスタンスを取得
+	//Player* player = Player::GetInstance();
 
-	//	プレイヤーの更新処理を呼び出す
-	player->Update();
+	////	プレイヤーの更新処理を呼び出す
+	//player->Update();
 
-	//	ランダムで表示する
-	std::shared_ptr<Enemy> enemy = EnemyFactory::CreateEnemy(r);
+	////	ランダムで表示する
+	//std::shared_ptr<Enemy> enemy = EnemyFactory::CreateEnemy(r);
 
-	if (enemy) {
-		//	敵の更新処理を呼び出す
-		enemy->Update();
-	}
-	else {
-		std::cout << "敵が見つかりません。" << std::endl;
+	//if (enemy) {
+	//	//	敵の更新処理を呼び出す
+	//	enemy->Update();
+	//}
+	//else {
+	//	std::cout << "敵が見つかりません。" << std::endl;
+	//}
+
+	//	シーン管理のオブジェクト化
+	//	最初のシーンはタイトルにする
+	std::unique_ptr<SceneBase> ScenePtr = std::make_unique<Title>();
+	SceneType currentScene = SceneType::Title;
+
+	//	メインループ
+	while (true)
+	{
+		//	処理を呼び出す
+		ScenePtr->Draw();
+		ScenePtr->Update();
+
+		if (ScenePtr->IsEnd())
+		{
+			SceneType nextScene = ScenePtr->NextScene();
+
+			//	シーンに合わせてそれぞれオブジェクト化を行う
+			switch (nextScene)
+			{
+			case SceneType::Title:
+				ScenePtr = std::make_unique<Title>();
+				break;
+			case SceneType::Game:
+				ScenePtr = std::make_unique<GameScene>();
+				break;
+			case SceneType::Over:
+				ScenePtr = std::make_unique<GameOver>();
+				break;
+			case SceneType::Clear:
+				ScenePtr = std::make_unique<GameClear>();
+				break;
+
+			case SceneType::Exit:
+				std::cout << "ゲームを終了" << std::endl;
+				return 0;
+			}
+
+			//	現在のシーンを更新
+			currentScene = nextScene;
+		}
 	}
 }
 
