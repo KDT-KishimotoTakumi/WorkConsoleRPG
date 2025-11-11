@@ -133,7 +133,7 @@
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SceneBase.cpp" />
-    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="GameTitle.cpp" />
     <ClCompile Include="WorkConsoleRPG.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,10 +146,13 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="PlayerModel.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerView.h" />
     <ClInclude Include="SceneBase.h" />
     <ClInclude Include="SceneType.h" />
-    <ClInclude Include="Title.h" />
+    <ClInclude Include="GameTitle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

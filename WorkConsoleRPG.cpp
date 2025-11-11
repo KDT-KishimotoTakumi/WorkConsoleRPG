@@ -6,7 +6,7 @@
 
 #include "SceneBase.h"
 #include "SceneType.h"
-#include "Title.h"
+#include "GameTitle.h"
 #include "Game.h"
 #include "GameOver.h"
 #include "GameClear.h"

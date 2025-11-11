@@ -3,114 +3,112 @@
 void GameScene::Update()
 {
 	//	ランダムにする（乱数の使用）
-	//	乱数系列の初期化
-	//	このコードを書かないとrand()を使用するとき何回も同じ値が入ってくる（制御するため）
 	srand(time(NULL));
 
-	////	乱数値の取得
-	//r = (rand() % 4) + 1;
+	//	ゲームの状態管理用switch文
+	switch (state)
+	{
+	case GameState::PlayerTurn:	//	待機状態（プレイヤーの入力待ち）
+	{
+		//	プレイヤーの入力処理を呼び出す
+		Action = PlayerControllerPtr->GetInput();
 
-	////	乱数の値を描画
-	//printf("%d\n", r);
-
-	switch (state) {
-	case GameState::Wait:
-		int input1;
-		std::cin >> input1;
-
-		if (input1 == 1) {
-			Enemy_Ptr->hp -= player->atk;
-			std::cout << "敵に" << player->atk << "ダメージを与えた！" << std::endl;
-			state = GameState::PlayerTurn;
-		}
-		else if (input1 == 2) {
-			Enemy_Ptr->hp -= player->atk * 2;	//	スキル
-			std::cout << "敵に" << player->atk * 2 << "ダメージを与えた！" << std::endl;
-			state = GameState::PlayerTurn;
-		}
-		else if (input1 == 3) {
-			std::cout << "プレイヤーは逃げ出した！" << std::endl;
-			endFlag = true;
-			state = GameState::End;
-			nextScene = SceneType::Title;
-		}
-		else //	無効なコマンドが選ばれた場合
+		//	入力による攻撃処理の分岐switch文
+		switch (Action)
 		{
-			std::cout << "無効なコマンドが選ばれた！" << std::endl;
+		case PlayerAction::Attack:							//	通常攻撃
+			PlayerControllerPtr->Attack(Enemy_Ptr);			//	通常攻撃時の処理を呼び出す
+			state = GameState::AttackTurn;					//	攻撃ターンに移行
+			break;
+
+		case PlayerAction::Skill:							//	スキル攻撃
+			PlayerControllerPtr->SkillAttack(Enemy_Ptr);	//	スキル攻撃時の処理を呼び出す
+			state = GameState::AttackTurn;					//	攻撃ターンに移行
+			break;
+
+		case PlayerAction::Run:								//	逃げる
+			PlayerControllerPtr->Run();						//	逃げるときの処理を呼び出す
+			endFlag = true;									//	シーン終了判定
+			state = GameState::End;							//	ゲーム終了状態に移行
+			nextScene = SceneType::Title;					//	タイトルシーンに移行
+			break;
+
+		default:	//	無効なコマンド
+			std::cout << "もう一度コマンドを選択してください。" << std::endl;
+			break;
 		}
 		break;
+	}
 
+	case GameState::AttackTurn:	//	攻撃ターン（プレイヤー及び敵の攻撃処理）
+	{
+		std::cout << "敵の攻撃ターン！" << std::endl;
 
-	case GameState::PlayerTurn:
-		//	プレイヤーの攻撃処理
-		std::cout << "プレイヤーの攻撃！" << std::endl;
-		state = GameState::Wait;
-
-		if (Enemy_Ptr) {
-			if (Enemy_Ptr->hp <= 0) {
-				Enemy_Ptr->IsDead();
-			}
+		//	敵が倒れたかどうかの判定
+		if (Enemy_Ptr && Enemy_Ptr->hp <= 0)
+		{
+			//	敵が倒れた処理が呼び出された場合
 			if (Enemy_Ptr->IsDead())
 			{
-				endFlag = true;
-				nextScene = SceneType::Clear;
+				endFlag = true;					//	シーン終了判定
+				nextScene = SceneType::Clear;	//	クリアシーンに移行
 				return;
 			}
 		}
-		else {
-			std::cout << "敵が見つかりません。" << std::endl;
-		}
 
-		//	敵のターンへ移行
+		//	敵が倒れていない場合は敵のターンに移行
 		state = GameState::EnemyTurn;
-
 		break;
+	}
 
-	case GameState::EnemyTurn:
-
+	case GameState::EnemyTurn:	//	敵のターン（敵の攻撃処理）
+	{
+		//	敵が存在しているとき
 		if (Enemy_Ptr)
 		{
-			//	敵の攻撃処理
 			std::cout << Enemy_Ptr->name << "の攻撃！" << std::endl;
-			//	プレイヤーのHPを減らす
-			player->hp -= Enemy_Ptr->atk - player->def;
+
+			//	ダメージ処理
+			//	エネミーの攻撃
+			//	プレイヤーに防御力がマイナスされた分のダメージを与える
+			int damage = Enemy_Ptr->atk - PlayerControllerPtr->GetModel()->GetDEF();
+			//	ダメージコントロール処理を呼び出される
+			//	PlayerViewにダメージを追った分の値を表示するため
+			PlayerControllerPtr->TakeDamage(damage);
 
 			//	プレイヤーがやられたとき
-			if (player->IsDead())
+			if (PlayerControllerPtr->IsDead())
 			{
-				endFlag = true;
-				nextScene = SceneType::Over;
+				endFlag = true;					//	シーン終了判定
+				nextScene = SceneType::Over;	//	ゲームオーバーシーンに移行
 				return;
 			}
 		}
 
-		//	ターンを戻す
-		state = GameState::Wait;
+		//	そのまま攻撃ターンにもう一度移行
+		state = GameState::AttackTurn;
 		break;
+	}
 
-	case GameState::End:
-
+	case GameState::End:	//	ゲームが終了した時（逃げるが選択されたとき）
 		std::cout << "ゲーム終了!!" << std::endl;
-		endFlag = true;
-		nextScene = SceneType::Title;
+		endFlag = true;					//	シーン終了判定
+		nextScene = SceneType::Title;	//	タイトルに移行
 		break;
 	}
 }
 
 void GameScene::Draw()
 {
-	//	プレイヤーの更新処理を呼び出す
-	player->Draw();
-	//	敵の更新処理を呼び出す
-	Enemy_Ptr->Draw();
+	PlayerControllerPtr->Draw();  // MVC化されたプレイヤー描画
+	Enemy_Ptr->Draw();			  // 敵は従来通り
 
-	switch (state)
+	//	攻撃ターンの時に描画する
+	if (state == GameState::AttackTurn)
 	{
-	case GameState::Wait:
-		std::cout << "プレイヤーのターン" << std::endl;
-		std::cout << "１：攻撃 攻撃力：" << player->atk << std::endl;
-		std::cout << "２：攻撃スキル 攻撃力：" << player->atk * 2 << std::endl;
+		std::cout << "コマンドを選択" << std::endl;
+		std::cout << "１：攻撃 攻撃力：" << PlayerControllerPtr->GetModel()->GetATK() << std::endl;
+		std::cout << "２：攻撃スキル 攻撃力：" << PlayerControllerPtr->GetModel()->GetATK() * 2 << std::endl;
 		std::cout << "３：逃げる ゲーム終了" << std::endl;
-		break;
 	}
 }
