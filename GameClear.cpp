@@ -21,7 +21,7 @@ void GameClear::Update()
 void GameClear::Draw()
 {
 	//	画面をクリアと文字の描画
-	system("cls");
+	//system("cls");
 	std::cout << "ゲームクリア!!" << std::endl;
 	std::cout << "１：タイトル画面" << std::endl;
 	std::cout << "２：ゲーム終了" << std::endl;

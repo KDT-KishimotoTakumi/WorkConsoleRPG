@@ -3,6 +3,8 @@
 #include "PlayerModel.h"
 #include "PlayerView.h"
 #include "Enemy.h" 
+#include <memory>
+
 
 //	プレイヤーの行動種別enumクラス
 enum class PlayerAction {
@@ -17,7 +19,7 @@ class PlayerController
 {
 private:
 
-	PlayerModel* player;  //	モデル
+	std::shared_ptr<PlayerModel> model;
 	PlayerView view;      //	ビュー
 
 public:
@@ -25,16 +27,20 @@ public:
 	//	コンストラクタ
 	PlayerController()
 	{
-		player = PlayerModel::GetInstance();	//	モデルクラスのインスタンスをモデルクラスに入れ込む
+		//	デフォルト引数で指定はしているが変更可能
+		model = std::make_unique<PlayerModel>();
 	}
 
 	//	モデルを取得
 	//	プレイヤーをリターンで取得
-	PlayerModel* GetModel() { return player; }
+	std::shared_ptr<PlayerModel> GetModel() { return model; }
 
 	//	入力受付（1:攻撃, 2:スキル, 3:逃げる）
 	PlayerAction GetInput()
 	{
+		//	入力の案内メッセージ
+
+
 		int input;			//	入力の値を入れ込むための変数
 		std::cin >> input;	//	入力判定処理
 
@@ -55,15 +61,15 @@ public:
 	void Attack(std::shared_ptr<Enemy> EnemyPtr)
 	{
 		if (!EnemyPtr) return;				//	敵が存在しないときはリターン
-		EnemyPtr->hp -= player->GetATK();	//	敵の体力をプレイヤーの通常攻撃の攻撃力分ダメージを与える
-		std::cout << "敵に" << player->GetATK() << "ダメージを与えた！" << std::endl;
+		EnemyPtr->hp -= model->GetATK();	//	敵の体力をプレイヤーの通常攻撃の攻撃力分ダメージを与える
+		std::cout << "敵に" << model->GetATK() << "ダメージを与えた！" << std::endl;
 	}
 
 	//	スキル攻撃
 	void SkillAttack(std::shared_ptr<Enemy> EnemyPtr)
 	{
 		if (!EnemyPtr) return;				//	敵が存在しないときはリターン
-		int damage = player->GetATK() * 2;	//	敵の体力をプレイヤーの通常攻撃の攻撃力分×２ダメージを与える
+		int damage = model->GetATK() * 2;	//	敵の体力をプレイヤーの通常攻撃の攻撃力分×２ダメージを与える
 		EnemyPtr->hp -= damage;				//	ここで敵のHPを減らす
 		std::cout << "スキル発動！敵に" << damage << "ダメージを与えた！" << std::endl;
 	}
@@ -71,24 +77,28 @@ public:
 	//	逃げる
 	void Run()
 	{
-		std::cout << "プレイヤーは逃げ出した！" << std::endl;
+//		std::cout << "プレイヤーは逃げ出した！" << std::endl;
+		//	コントローラーで直で描画処理を書くな
+		view.DispMassageRun();
 	}
 
 	//	描画
 	void Draw()
 	{
-		view.DisplayStatus(player);					//	Viewからプレイヤーの描画処理を呼び出す
+		view.DisplayStatus(model);					//	Viewからプレイヤーの描画処理を呼び出す
 	}
 
 	//	被ダメージ処理
 	void TakeDamage(int value)
 	{
-		player->SetHP(player->GetHP() - value);		//	プレイヤーのHPを減らす処理を呼び出す
+//		model->SetHP(model->GetHP() - value);		//	プレイヤーのHPを減らす処理を呼び出す
+		model->ChangeHp(value);				//	HP変動メソッド
+
 	}
 
 	//	死亡判定
 	bool IsDead()
 	{
-		return player->IsDead();				
+		return model->IsDead();				
 	}
 };

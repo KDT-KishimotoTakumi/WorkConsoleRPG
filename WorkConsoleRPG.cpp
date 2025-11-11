@@ -2,8 +2,8 @@
 //
 
 #include <iostream>
-#include <memory>
 
+#include <memory>
 #include "SceneBase.h"
 #include "SceneType.h"
 #include "GameTitle.h"
@@ -16,7 +16,7 @@ int main()
 	////	ランダムにする（乱数の使用）
 	////	乱数系列の初期化
 	////	このコードを書かないとrand()を使用するとき何回も同じ値が入ってくる（制御するため）
-	//srand(time(NULL));
+	srand(time(NULL));
 
 	////	乱数値の取得
 	//int r = (rand() % 4) + 1;
@@ -43,34 +43,37 @@ int main()
 
 	//	シーン管理のオブジェクト化
 	//	最初のシーンはタイトルにする
-	std::unique_ptr<SceneBase> ScenePtr = std::make_unique<Title>();
+	std::unique_ptr<SceneBase> scenePtr = std::make_unique<Title>();
 	SceneType currentScene = SceneType::Title;
 
 	//	メインループ
 	while (true)
 	{
-		//	処理を呼び出す
-		ScenePtr->Draw();
-		ScenePtr->Update();
 
-		if (ScenePtr->IsEnd())
+		scenePtr->Draw();
+
+		//	処理を呼び出す
+		scenePtr->Update();
+
+
+		if (scenePtr->IsEnd())
 		{
-			SceneType nextScene = ScenePtr->NextScene();
+			SceneType nextScene = scenePtr->NextScene();
 
 			//	シーンに合わせてそれぞれオブジェクト化を行う
 			switch (nextScene)
 			{
 			case SceneType::Title:
-				ScenePtr = std::make_unique<Title>();
+				scenePtr = std::make_unique<Title>();
 				break;
 			case SceneType::Game:
-				ScenePtr = std::make_unique<GameScene>();
+				scenePtr = std::make_unique<GameScene>();
 				break;
 			case SceneType::Over:
-				ScenePtr = std::make_unique<GameOver>();
+				scenePtr = std::make_unique<GameOver>();
 				break;
 			case SceneType::Clear:
-				ScenePtr = std::make_unique<GameClear>();
+				scenePtr = std::make_unique<GameClear>();
 				break;
 
 			case SceneType::Exit:

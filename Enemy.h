@@ -5,7 +5,6 @@
 //	敵クラスの母体クラス
 class Enemy
 {
-
 public:
 
 	//	ステータス変数
@@ -13,19 +12,11 @@ public:
 	const char* name;	//	敵の名前
 	int hp;				//	体力
 	int atk;			//	攻撃力
+	//	publicに置くな
 
-	//	コピー・代入の禁止
-	Enemy(const Enemy&) = delete;
-	Enemy& operator=(const Enemy&) = delete;
+public:
 
-	//	シングルトンインスタンスを取得する関数
-	static	Enemy* GetInstance(const EnemyData& data)
-	{
-		//	シングルトンインスタンスの生成
-		static Enemy instance(data);
-		//	インスタンスのポインタを返す
-		return &instance;
-	}
+	//	シングルトンをむやみやたらに使おうとするな
 
 	//	引数コンストラクタ
 	//	EnemyData構造体を引数に取る
@@ -61,4 +52,6 @@ public:
 	{
 		std::cout << this->name << "はダメージを受けた！" << std::endl;
 	}
+
+
 };

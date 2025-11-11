@@ -31,9 +31,6 @@
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{3eb128d9-c3c6-4062-9d84-1a379373b338}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\GameMain">
-      <UniqueIdentifier>{e16f93e5-89bc-4d27-b1b7-830e12880757}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Command">
       <UniqueIdentifier>{fb840890-d09a-40a7-8a2a-ab5e3cc96d11}</UniqueIdentifier>
     </Filter>
@@ -60,14 +57,11 @@
     <ClCompile Include="SceneBase.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>ソース ファイル\GameMain</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>ソース ファイル\GameMain</Filter>
-    </ClCompile>
     <ClCompile Include="WorkConsoleRPG.cpp">
       <Filter>ソース ファイル\GameMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,9 +89,6 @@
     <ClInclude Include="SceneType.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>ヘッダー ファイル\Player</Filter>
-    </ClInclude>
     <ClInclude Include="GameClear.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
@@ -107,17 +98,14 @@
     <ClInclude Include="GameTitle.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>ヘッダー ファイル\GameMain</Filter>
-    </ClInclude>
-    <ClInclude Include="Main.h">
-      <Filter>ヘッダー ファイル\GameMain</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerView.h">
       <Filter>ヘッダー ファイル\Player</Filter>
     </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>ヘッダー ファイル\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

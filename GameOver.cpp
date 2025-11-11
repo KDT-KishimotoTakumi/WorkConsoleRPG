@@ -21,7 +21,7 @@ void GameOver::Update()
 void GameOver::Draw()
 {
 	//	画面をクリアと文字の描画
-	system("cls");
+//	system("cls");
 	std::cout << "ゲームオーバー!!" << std::endl;
 	std::cout << "１：タイトル画面" << std::endl;
 	std::cout << "２：ゲーム終了" << std::endl;
